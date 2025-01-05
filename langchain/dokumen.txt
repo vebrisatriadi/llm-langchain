@@ -1,0 +1,9 @@
+{"question": "Apa yang dimaksud dengan hipertensi?", "answer": "Hipertensi, atau tekanan darah tinggi, adalah kondisi di mana tekanan darah seseorang berada di atas nilai normal, yaitu 140/90 mmHg atau lebih. Hipertensi dapat meningkatkan risiko penyakit jantung, stroke, dan komplikasi lainnya."}
+
+{"question": "Apa saja gejala diabetes tipe 2?", "answer": "Gejala diabetes tipe 2 meliputi sering merasa haus, sering buang air kecil, mudah lelah, penurunan berat badan tanpa sebab, penglihatan kabur, dan luka yang sulit sembuh."}
+
+{"question": "Bagaimana cara melakukan pertolongan pertama pada luka bakar ringan?", "answer": "Pertolongan pertama pada luka bakar ringan meliputi: 1. Membasuh luka dengan air mengalir selama 10-15 menit untuk mendinginkan kulit; 2. Menutup luka dengan kain bersih atau perban steril; 3. Menghindari penggunaan bahan seperti pasta gigi atau mentega pada luka."}
+
+{"question": "Apa itu Indeks Massa Tubuh (IMT) dan bagaimana cara menghitungnya?", "answer": "Indeks Massa Tubuh (IMT) adalah ukuran yang digunakan untuk menentukan status berat badan seseorang berdasarkan tinggi dan berat badan. Rumusnya adalah berat badan (kg) dibagi dengan tinggi badan (m) kuadrat. Contoh: Jika berat badan 70 kg dan tinggi 1,75 m, IMT = 70 / (1,75^2) = 22,86."}
+
+{"question": "Apa perbedaan antara infeksi virus dan infeksi bakteri?", "answer": "Infeksi virus disebabkan oleh virus yang masuk ke dalam tubuh, sedangkan infeksi bakteri disebabkan oleh bakteri. Infeksi virus biasanya memerlukan pengobatan untuk mengurangi gejala, sedangkan infeksi bakteri sering memerlukan antibiotik untuk mengatasi infeksi."}
