@@ -7,7 +7,7 @@
 - Project to build simple RAG model
 - Building RAG Model with Langchain framework
 - Datasets including medical information
-- Using `google/flan-t5-small` for smaller computation
+- Using `google/flan-t5-small` from `HuggingFace` repo for smaller computation
 
 ## How to Run
 1. Activate your virtual environment
