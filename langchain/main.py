@@ -30,12 +30,12 @@ def setup_rag():
     # 5. Setup retriever
     retriever = db.as_retriever(
         search_type="similarity",
-        search_kwargs={"k": 3}
+        search_kwargs={"k": 5}
     )
     
     # 6. Setup LLM dan chain
     llm = HuggingFaceHub(
-        repo_id="google/flan-t5-small",  # smaller, free model
+        repo_id="google/flan-t5-small", 
         model_kwargs={"temperature": 0.5, "max_length": 512}
     )
     qa_chain = RetrievalQA.from_chain_type(
@@ -47,14 +47,14 @@ def setup_rag():
     return qa_chain
 
 # Fungsi untuk query
-def query_rag(qa_chain, pertanyaan):
-    response = qa_chain.run(pertanyaan)
+def query_rag(qa_chain, question):
+    response = qa_chain.run(question)
     return response
 
 # Contoh penggunaan
 if __name__ == "__main__":
     qa_chain = setup_rag()
-    pertanyaan = "Bagaimana cara melakukan pertolongan pertama pada luka bakar ringan?"
-    jawaban = query_rag(qa_chain, pertanyaan)
+    question = "Bagaimana cara melakukan pertolongan pertama pada luka bakar ringan?"
+    answer = query_rag(qa_chain, question)
     print("================================================")
-    print(jawaban)
+    print(answer)
