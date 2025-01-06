@@ -1,43 +1,51 @@
+import json
+import pickle
 import numpy as np
-from langchain.document_loaders import TextLoader
+from langchain.schema import Document
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
-from langchain.llms import OpenAI
+from langchain_community.llms import HuggingFaceHub
 from langchain.chains import RetrievalQA
 
-from langchain_community.llms import HuggingFaceHub
+def load_qa_data(file_path):
+    """Load data dari file JSON QA"""
+    documents = []
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            if line.strip():
+                data = json.loads(line)
+                combined_text = f"Pertanyaan: {data['question']}\nJawaban: {data['answer']}"
+                doc = Document(page_content=combined_text, metadata={"source": "qa_dataset"})
+                documents.append(doc)
+    return documents
+
 def setup_rag():
-    # 1. Load dokumen
-    loader = TextLoader("dokumen.txt")
-    documents = loader.load()
+    # Kode setup RAG yang sudah ada
+    documents = load_qa_data("dokumen.txt")
     
-    # 2. Split dokumen menjadi chunk
     text_splitter = CharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=200
     )
     texts = text_splitter.split_documents(documents)
     
-    # 3. Buat embeddings
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     )
     
-    # 4. Buat vector store
     db = FAISS.from_documents(texts, embeddings)
     
-    # 5. Setup retriever
     retriever = db.as_retriever(
         search_type="similarity",
         search_kwargs={"k": 5}
     )
     
-    # 6. Setup LLM dan chain
     llm = HuggingFaceHub(
         repo_id="google/flan-t5-small", 
         model_kwargs={"temperature": 0.5, "max_length": 512}
     )
+    
     qa_chain = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
@@ -46,15 +54,32 @@ def setup_rag():
     
     return qa_chain
 
-# Fungsi untuk query
-def query_rag(qa_chain, question):
-    response = qa_chain.run(question)
-    return response
+def save_model(qa_chain, save_dir="./saved_model"):
+    """Menyimpan model RAG"""
+    import os
+    os.makedirs(save_dir, exist_ok=True)
+    
+    # Simpan FAISS index
+    qa_chain.retriever.vectorstore.save_local(f"{save_dir}/faiss_index")
+    
+    # Simpan konfigurasi
+    config = {
+        "search_kwargs": qa_chain.retriever.search_kwargs,
+        "model_config": {
+            "repo_id": "google/flan-t5-small",
+            "model_kwargs": {"temperature": 0.5, "max_length": 512}
+        }
+    }
+    
+    with open(f"{save_dir}/config.pkl", "wb") as f:
+        pickle.dump(config, f)
+    
+    print(f"Model berhasil disimpan di: {save_dir}")
 
-# Contoh penggunaan
 if __name__ == "__main__":
+    # Training dan menyimpan model
+    print("Training model...")
     qa_chain = setup_rag()
-    question = "Bagaimana cara melakukan pertolongan pertama pada luka bakar ringan?"
-    answer = query_rag(qa_chain, question)
-    print("================================================")
-    print(answer)
+    
+    print("Menyimpan model...")
+    save_model(qa_chain, "./saved_rag_model")
