@@ -15,11 +15,11 @@
 ```
 export HUGGINGFACEHUB_API_TOKEN=
 ```
-3. Install Dependencies
+3. Go to `langchain` folder
+4. Install Dependencies
 ```
 pip install -r requirements.txt
 ```
-4. Go to `langchain` folder
 5. Build and save the RAG model
 ```
 python main.py
