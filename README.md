@@ -8,6 +8,7 @@
 - Building RAG Model with Langchain framework
 - Datasets including medical information
 - Using `google/flan-t5-small` from `HuggingFace` repo for smaller computation
+- Using FastAPI for API
 
 ## How to Run
 1. Activate your virtual environment
@@ -36,4 +37,9 @@ docker build -t llm-app .
 ```
 ```
 docker run -p --name langchain-app 5050:5050 llm-app
+```
+
+## Test the API
+```
+curl -X POST "http://0.0.0.0:5050/query" -H "Content-Type: application/json" -d '{"question": "apa gejala diabetes tipe 2?"}'
 ```
