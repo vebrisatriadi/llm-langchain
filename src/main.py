@@ -1,5 +1,6 @@
-# test.py
-
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
 import os
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
@@ -7,7 +8,25 @@ from langchain_community.llms import HuggingFaceHub
 from langchain.chains import RetrievalQA
 import pickle
 
-def load_model(load_dir="./saved_rag_model"):
+# MODEL_DIR = "/Users/vebrisatriadi/Documents/Portfolio/llm/"
+HOME_DIR = os.getenv("HOME_DIR", "/app")
+MODEL_DIR = os.path.join(HOME_DIR, "llm/langchain/saved_rag_model")
+
+app = FastAPI()
+
+class QueryRequest(BaseModel):
+    question: str
+
+class QueryResponse(BaseModel):
+    answer: str
+
+# Load the model when the application starts
+@app.on_event("startup")
+def load_model_on_startup():
+    global qa_chain
+    qa_chain = load_model(MODEL_DIR + "langchain/saved_rag_model")
+
+def load_model(load_dir=MODEL_DIR + "/saved_rag_model"):
     """Memuat model RAG yang telah disimpan"""
     # Load konfigurasi
     with open(f"{load_dir}/config.pkl", "rb") as f:
@@ -51,26 +70,14 @@ def query_rag(qa_chain, question):
     response = qa_chain.run(question)
     return response
 
+@app.post("/query", response_model=QueryResponse)
+def query_model(request: QueryRequest):
+    try:
+        answer = query_rag(qa_chain, request.question)
+        return QueryResponse(answer=answer)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
-    # Set Hugging Face token
-    
-    # Load model
-    print("Loading model...")
-    qa_chain = load_model("./saved_rag_model")
-    print("Model loaded successfully!")
-    
-    # Test beberapa pertanyaan
-    test_questions = [
-        "apa itu hipertensi?",
-        "gmana ya cara mengobati luka bakar berat?",
-        "diabetes tipe 2 gejalanya apa aja ya?"
-    ]
-    
-    print("\nMulai testing model...")
-    print("=" * 50)
-    
-    for question in test_questions:
-        print("\nQ:", question)
-        answer = query_rag(qa_chain, question)
-        print("A:", answer)
-        print("-" * 50)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=5000)

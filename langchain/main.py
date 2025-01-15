@@ -43,7 +43,11 @@ def setup_rag():
     
     llm = HuggingFaceHub(
         repo_id="google/flan-t5-small", 
-        model_kwargs={"temperature": 0.5, "max_length": 512}
+        model_kwargs={
+            "temperature": 0.5, 
+            "max_length": 256,
+            "top_k": 20,
+            "num_return_sequences": 5}
     )
     
     qa_chain = RetrievalQA.from_chain_type(
