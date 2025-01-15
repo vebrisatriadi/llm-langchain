@@ -4,6 +4,8 @@ FROM python:3.11-slim
 # Set the working directory in the container
 WORKDIR /app
 ENV HOME_DIR=/app
+ENV HUGGINGFACEHUB_API_TOKEN="" 
+# Insert your HuggingFace API Token above
 
 # Copy the requirements file into the container
 COPY requirements.txt .
@@ -15,7 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose the port the app runs on
-EXPOSE 5000
+EXPOSE 5050
 
 # Command to run the application
-CMD ["python", "app.py"]
+CMD ["python", "src/main.py"]

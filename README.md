@@ -28,3 +28,12 @@ python main.py
 ```
 python test.py
 ```
+
+## Run the Docker image
+Set your `HuggingFace` API Key Token in Dockerfile
+```
+docker build -t llm-app .
+```
+```
+docker run -p 5050:5050 llm-app
+```
