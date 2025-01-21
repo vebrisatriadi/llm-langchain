@@ -7,24 +7,25 @@ from langchain.vectorstores import FAISS
 from langchain_community.llms import HuggingFaceHub
 from langchain.chains import RetrievalQA
 import pickle
+from contextlib import asynccontextmanager
 
 MODEL_DIR = "/Users/vebrisatriadi/Documents/Portfolio/llm/"
 # HOME_DIR = os.getenv("HOME_DIR", "/app")
 # MODEL_DIR = os.path.join(HOME_DIR, "llm/langchain/saved_rag_model")
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global qa_chain
+    qa_chain = load_model("./langchain/saved_rag_model")
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 class QueryRequest(BaseModel):
     question: str
 
 class QueryResponse(BaseModel):
     answer: str
-
-# Load the model when the application starts
-@app.on_event("startup")
-def load_model_on_startup():
-    global qa_chain
-    qa_chain = load_model("./langchain/saved_rag_model")
 
 def load_model(load_dir="./langchain/saved_rag_model"):
     """Memuat model RAG yang telah disimpan"""
